@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        .name-container {
+            /* These properties ensure the container spans the full viewport and centers its content */
+            position: fixed; /* Keeps it fixed in the viewport */
+            top: 0;
+            left: 0;
+            width: 100vw;    /* Full viewport width */
+            height: 100vh;   /* Full viewport height */
+            display: flex;             /* Enables flexbox for centering */
+            justify-content: center;   /* Centers horizontally */
+            align-items: center;       /* Centers vertically */
+            /* Optional: z-index if it needs to be above other content */
+            /* z-index: 1000; */
+        }
+
+        .my-name {
+            /* --- FONT SIZE --- */
+            font-size: 7rem; /* Adjust this value to make the text bigger or smaller */
+            /* You can try values like 8rem, 10vw (scales with viewport width), or 120px */
+            /* --------------- */
+
+            font-family: 'Montserrat', sans-serif; /* Your chosen font */
+            color: #343a40; /* Text color */
+            text-align: center; /* Ensures the text itself is centered within its own box */
+            padding: 20px 40px; /* Space around the text */
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); /* Soft shadow for depth */
+
+            /* Ensure it doesn't wrap awkwardly on smaller screens */
+            white-space: nowrap;
+            min-width: fit-content;
+            max-width: 90vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="text-center mt-5">
+        <h1>PORTFOLIO</h1>
+    </div>
+
+    <div class="name-container">
+        <p class="my-name">Auron Jarred C. Aguilar</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
