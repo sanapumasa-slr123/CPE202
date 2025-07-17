@@ -67,6 +67,9 @@
             background-color: rgba(248, 249, 250, 0.9);
             margin-top: 20px;
             border-top: 1px solid #dee2e6;
+            display: flex; /* Use flexbox to push footer to bottom */
+            flex-direction: column;
+            justify-content: space-between; /* Push content up, footer down */
         }
 
         .portfolio-heading {
@@ -147,6 +150,48 @@
                 font-size: 0.8rem;
             }
         }
+
+        /* Footer Platform Styles */
+        .footer-platform {
+            background-color: #6c757d; /* A medium grey from Bootstrap's palette */
+            color: #fff; /* White text for contrast */
+            padding: 20px 40px; /* Vertical and horizontal padding */
+            display: flex;
+            justify-content: space-between; /* Pushes items to ends */
+            align-items: center; /* Vertically centers items */
+            margin-top: auto; /* Pushes the footer to the bottom of the flex container (.section-two) */
+            flex-shrink: 0; /* Prevents shrinking */
+        }
+
+        .footer-link {
+            color: #fff; /* White link color */
+            text-decoration: none; /* No underline */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            transition: color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .footer-link:hover {
+            color: #f8f9fa; /* Slightly lighter white on hover */
+            text-decoration: underline; /* Underline on hover */
+        }
+
+        /* Responsive adjustments for footer */
+        @media (max-width: 768px) {
+            .footer-platform {
+                flex-direction: column; /* Stack items vertically on smaller screens */
+                text-align: center;
+                padding: 20px;
+            }
+            .footer-link {
+                margin-bottom: 10px; /* Space between stacked links */
+                font-size: 0.9rem;
+            }
+            .footer-link:last-child {
+                margin-bottom: 0; /* No margin on the last item */
+            }
+        }
     </style>
 </head>
 <body>
@@ -159,7 +204,7 @@
         <h1 class="portfolio-heading">PORTFOLIO</h1>
 
         <div class="profile-pic-container">
-           <img src="../487887734_1889812768497414_3656718016555680286_n.jpg" alt="Auron Jarred C. Aguilar Profile Picture" class="profile-pic">
+            <img src="../487887734_1889812768497414_3656718016555680286_n.jpg" alt="Auron Jarred C. Aguilar Profile Picture" class="profile-pic">
             <p class="profile-name">Auron Jarred C. Aguilar</p>
         </div>
 
@@ -179,6 +224,11 @@
             <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
             <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
             </div>
+
+        <div class="footer-platform">
+            <a href="mailto:acaguilar@student.hau.edu.ph" class="footer-link">acaguilar@student.hau.edu.ph</a>
+            <a href="https://github.com/sanapumasa-slr123" target="_blank" class="footer-link">sanapumasa-slr123 (aguilar)</a>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
