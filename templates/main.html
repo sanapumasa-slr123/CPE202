@@ -9,51 +9,176 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        .name-container {
-            /* These properties ensure the container spans the full viewport and centers its content */
-            position: fixed; /* Keeps it fixed in the viewport */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .name-background {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;    /* Full viewport width */
-            height: 100vh;   /* Full viewport height */
-            display: flex;             /* Enables flexbox for centering */
-            justify-content: center;   /* Centers horizontally */
-            align-items: center;       /* Centers vertically */
-            /* Optional: z-index if it needs to be above other content */
-            /* z-index: 1000; */
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .my-name {
-            /* --- FONT SIZE --- */
-            font-size: 7rem; /* Adjust this value to make the text bigger or smaller */
-            /* You can try values like 8rem, 10vw (scales with viewport width), or 120px */
-            /* --------------- */
-
-            font-family: 'Montserrat', sans-serif; /* Your chosen font */
-            color: #343a40; /* Text color */
-            text-align: center; /* Ensures the text itself is centered within its own box */
-            padding: 20px 40px; /* Space around the text */
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
-            border-radius: 15px; /* Rounded corners */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15); /* Soft shadow for depth */
-
-            /* Ensure it doesn't wrap awkwardly on smaller screens */
+            font-size: 10rem;
+            font-family: 'Montserrat', sans-serif;
+            color: rgba(150, 150, 150, 0.5);
+            text-align: center;
             white-space: nowrap;
             min-width: fit-content;
             max-width: 90vw;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        @media (max-width: 768px) {
+            .my-name {
+                font-size: 6rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .my-name {
+                font-size: 3rem;
+            }
+        }
+
+        .content-section {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 50px 20px;
+            background-color: transparent;
+        }
+
+        .section-one {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .section-two {
+            background-color: rgba(248, 249, 250, 0.9);
+            margin-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .portfolio-heading {
+            font-size: 5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .portfolio-heading {
+                font-size: 3.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .portfolio-heading {
+                font-size: 2.5rem;
+            }
+        }
+
+        .profile-pic-container {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 220px;
+            margin: 0 auto 30px auto;
+        }
+
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .profile-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #343a40;
+            font-size: 1.1rem;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .profile-pic-container {
+                width: 150px;
+                margin-bottom: 20px;
+            }
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+            }
+            .profile-name {
+                font-size: 0.95rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .profile-pic-container {
+                width: 120px;
+                margin-bottom: 15px;
+            }
+            .profile-pic {
+                width: 90px;
+                height: 90px;
+            }
+            .profile-name {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="text-center mt-5">
-        <h1>PORTFOLIO</h1>
+    <div class="name-background">
+        <p class="my-name">Auron Jarred C. Aguilar</p>
     </div>
 
-    <div class="name-container">
-        <p class="my-name">Auron Jarred C. Aguilar</p>
+    <div class="content-section section-one">
+        <h1 class="portfolio-heading">PORTFOLIO</h1>
+
+        <div class="profile-pic-container">
+           <img src="../487887734_1889812768497414_3656718016555680286_n.jpg" alt="Auron Jarred C. Aguilar Profile Picture" class="profile-pic">
+            <p class="profile-name">Auron Jarred C. Aguilar</p>
+        </div>
+
+        <div class="container">
+            <p class="lead text-center">Welcome to my portfolio! Here you'll find a collection of my work and projects. Scroll down to see more.</p>
+            <p>I'm Auron Jarred C. Aguilar, a dedicated and passionate student currently pursuing a Bachelor of Science in Computer Engineering at Holy Angel University. With a strong interest in technology and innovation, I am constantly exploring new ways to solve real-world problems through engineering, coding, and system design.</p>
+            <p>I enjoy working on both the hardware and software sides of computing, and I’m particularly interested in embedded systems, automation, and AI-driven solutions. I thrive in collaborative environments where ideas can flow freely and learning never stops.</p>
+            <p>In my spare time, I love diving into tech trends, tinkering with electronics, and sometimes unwinding with video games or good music. I believe that creativity and logic go hand in hand—and I always strive to bring that balance into every project I take on.</p>
+
+        </div>
+    </div>
+
+    <div class="content-section section-two">
+        <div class="container">
+            <h2 class="text-center mb-4">About Me</h2>
+            <p>This section can now contain more detailed information about your skills, specific projects, work experience, or resume details. The background name "Auron Jarred C. Aguilar" will remain visible as you scroll.</p>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+            </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
