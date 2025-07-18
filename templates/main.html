@@ -1,236 +1,461 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-
+    <title>User Data Dashboard (Firestore)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light grey background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better scrolling on smaller screens */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            padding: 2rem;
+        }
+        .header {
+            font-size: 2rem; /* Larger header */
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate; /* Allows border-radius on cells */
+            border-spacing: 0; /* Remove space between cells */
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0; /* Light border for rows */
+        }
+        th {
+            background-color: #edf2f7; /* Light header background */
+            font-weight: 600;
+            color: #2d3748;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        tr:last-child td {
+            border-bottom: none; /* No border for the last row */
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            margin-right: 0.5rem;
+        }
+        .btn-view {
+            background-color: #4299e1; /* Blue */
+            color: white;
+        }
+        .btn-view:hover {
+            background-color: #3182ce;
+        }
+        .btn-delete {
+            background-color: #e53e3e; /* Red */
+            color: white;
+        }
+        .btn-delete:hover {
+            background-color: #c53030;
+        }
+        .btn-add {
+            background-color: #48bb78; /* Green */
+            color: white;
+        }
+        .btn-add:hover {
+            background-color: #38a169;
         }
 
-        .name-background {
+        /* Custom Message Box Styles */
+        .message-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+        .message-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: -1;
-            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
         }
-
-        .my-name {
-            font-size: 10rem;
-            font-family: 'Montserrat', sans-serif;
-            color: rgba(150, 150, 150, 0.5);
-            text-align: center;
-            white-space: nowrap;
-            min-width: fit-content;
-            max-width: 90vw;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
-
-        @media (max-width: 768px) {
-            .my-name {
-                font-size: 6rem;
-            }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-out;
         }
-        @media (max-width: 480px) {
-            .my-name {
-                font-size: 3rem;
-            }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
         }
-
-        .content-section {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            padding: 50px 20px;
-            background-color: transparent;
-        }
-
-        .section-one {
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        .section-two {
-            background-color: rgba(248, 249, 250, 0.9);
-            margin-top: 20px;
-            border-top: 1px solid #dee2e6;
-            display: flex; /* Use flexbox to push footer to bottom */
-            flex-direction: column;
-            justify-content: space-between; /* Push content up, footer down */
-        }
-
-        .portfolio-heading {
-            font-size: 5rem;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            color: #343a40;
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        @media (max-width: 768px) {
-            .portfolio-heading {
-                font-size: 3.5rem;
-            }
-        }
-        @media (max-width: 480px) {
-            .portfolio-heading {
-                font-size: 2.5rem;
-            }
-        }
-
-        .profile-pic-container {
-            z-index: 10;
+        .modal-header {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            width: 220px;
-            margin: 0 auto 30px auto;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1rem;
         }
-
-        .profile-pic {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 10px;
-        }
-
-        .profile-name {
-            font-family: 'Montserrat', sans-serif;
+        .modal-title {
+            font-size: 1.75rem;
             font-weight: 700;
-            color: #343a40;
-            font-size: 1.1rem;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
+            color: #1a202c;
         }
-
-        /* Adjustments for smaller screens */
-        @media (max-width: 768px) {
-            .profile-pic-container {
-                width: 150px;
-                margin-bottom: 20px;
-            }
-            .profile-pic {
-                width: 120px;
-                height: 120px;
-            }
-            .profile-name {
-                font-size: 0.95rem;
-            }
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #718096;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
         }
-        @media (max-width: 480px) {
-            .profile-pic-container {
-                width: 120px;
-                margin-bottom: 15px;
-            }
-            .profile-pic {
-                width: 90px;
-                height: 90px;
-            }
-            .profile-name {
-                font-size: 0.8rem;
-            }
+        .modal-close-btn:hover {
+            background-color: #edf2f7;
         }
-
-        /* Footer Platform Styles */
-        .footer-platform {
-            background-color: #6c757d; /* A medium grey from Bootstrap's palette */
-            color: #fff; /* White text for contrast */
-            padding: 20px 40px; /* Vertical and horizontal padding */
-            display: flex;
-            justify-content: space-between; /* Pushes items to ends */
-            align-items: center; /* Vertically centers items */
-            margin-top: auto; /* Pushes the footer to the bottom of the flex container (.section-two) */
-            flex-shrink: 0; /* Prevents shrinking */
-        }
-
-        .footer-link {
-            color: #fff; /* White link color */
-            text-decoration: none; /* No underline */
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400;
+        .modal-body p {
+            margin-bottom: 0.75rem;
+            color: #2d3748;
             font-size: 1rem;
-            transition: color 0.3s ease; /* Smooth hover effect */
         }
-
-        .footer-link:hover {
-            color: #f8f9fa; /* Slightly lighter white on hover */
-            text-decoration: underline; /* Underline on hover */
+        .modal-body strong {
+            color: #4a5568;
+            margin-right: 0.5rem;
         }
-
-        /* Responsive adjustments for footer */
-        @media (max-width: 768px) {
-            .footer-platform {
-                flex-direction: column; /* Stack items vertically on smaller screens */
-                text-align: center;
-                padding: 20px;
-            }
-            .footer-link {
-                margin-bottom: 10px; /* Space between stacked links */
-                font-size: 0.9rem;
-            }
-            .footer-link:last-child {
-                margin-bottom: 0; /* No margin on the last item */
-            }
+        .loading-indicator {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+            color: #4a5568;
         }
     </style>
 </head>
 <body>
+    <div class="container-wrapper">
+        <div class="card">
+            <h1 class="header">User Data Dashboard</h1>
+            <div id="loading" class="loading-indicator">Loading data...</div>
+            <p id="userIdDisplay" class="text-sm text-gray-600 text-center mb-4"></p>
 
-    <div class="name-background">
-        <p class="my-name">Auron Jarred C. Aguilar</p>
+            <!-- Removed "Add New User" section -->
+
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Existing Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>CTA</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- User data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="content-section section-one">
-        <h1 class="portfolio-heading">PORTFOLIO</h1>
-
-        <div class="profile-pic-container">
-            <img src="../487887734_1889812768497414_3656718016555680286_n.jpg" alt="Auron Jarred C. Aguilar Profile Picture" class="profile-pic">
-            <p class="profile-name">Auron Jarred C. Aguilar</p>
-        </div>
-
-        <div class="container">
-            <p class="lead text-center">Welcome to my portfolio! Here you'll find a collection of my work and projects. Scroll down to see more.</p>
-            <p>I'm Auron Jarred C. Aguilar, a dedicated and passionate student currently pursuing a Bachelor of Science in Computer Engineering at Holy Angel University. With a strong interest in technology and innovation, I am constantly exploring new ways to solve real-world problems through engineering, coding, and system design.</p>
-            <p>I enjoy working on both the hardware and software sides of computing, and I’m particularly interested in embedded systems, automation, and AI-driven solutions. I thrive in collaborative environments where ideas can flow freely and learning never stops.</p>
-            <p>In my spare time, I love diving into tech trends, tinkering with electronics, and sometimes unwinding with video games or good music. I believe that creativity and logic go hand in hand—and I always strive to bring that balance into every project I take on.</p>
-
-        </div>
-    </div>
-
-    <div class="content-section section-two">
-        <div class="container">
-            <h2 class="text-center mb-4">About Me</h2>
-            <p>This section can now contain more detailed information about your skills, specific projects, work experience, or resume details. The background name "Auron Jarred C. Aguilar" will remain visible as you scroll.</p>
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-            <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+    <!-- User Details Modal -->
+    <div id="userDetailsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">User Details</h2>
+                <button class="modal-close-btn" onclick="hideModal()">&times;</button>
             </div>
-
-        <div class="footer-platform">
-            <a href="mailto:acaguilar@student.hau.edu.ph" class="footer-link">acaguilar@student.hau.edu.ph</a>
-            <a href="https://github.com/sanapumasa-slr123" target="_blank" class="footer-link">sanapumasa-slr123 (aguilar)</a>
+            <div class="modal-body">
+                <p><strong>ID:</strong> <span id="modalUserId"></span></p>
+                <p><strong>First Name:</strong> <span id="modalUserFirstName"></span></p>
+                <p><strong>Last Name:</strong> <span id="modalUserLastName"></span></p>
+                <p><strong>Email:</strong> <span id="modalUserEmail"></span></p>
+                <p><strong>Additional Info:</strong> <span id="modalUserAdditionalInfo"></span></p>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Firebase variables
+        let app;
+        let db;
+        let auth;
+        let currentUserId = null;
+        let usersCollectionRef;
+        let currentUsersSnapshot = []; // To store the latest data from Firestore
+
+        const userTableBody = document.getElementById('userTableBody');
+        const userDetailsModal = document.getElementById('userDetailsModal');
+        const loadingIndicator = document.getElementById('loading');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        // const addNewUserBtn = document.getElementById('addNewUserBtn'); // Removed as the section is removed
+
+        // Input fields for adding new user (removed from HTML, so these variables are no longer needed)
+        // const newFirstNameInput = document.getElementById('newFirstName');
+        // const newLastNameInput = document.getElementById('newLastName');
+        // const newEmailInput = document.getElementById('newEmail');
+        // const newAdditionalInfoInput = document.getElementById('newAdditionalInfo');
+
+        // Custom message box function
+        function showMessageBox(message, type = 'info') {
+            const messageBox = document.createElement('div');
+            messageBox.className = `message-box ${type}`; // Use class for styling
+            messageBox.textContent = message;
+            document.body.appendChild(messageBox);
+
+            setTimeout(() => {
+                messageBox.classList.add('show');
+            }, 10);
+
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+                messageBox.addEventListener('transitionend', () => {
+                    messageBox.remove();
+                }, { once: true });
+            }, 3000); // Display for 3 seconds
+        }
+
+        // Initialize Firebase and authenticate
+        async function initializeFirebase() {
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+                if (Object.keys(firebaseConfig).length === 0) {
+                    showMessageBox("Firebase configuration not found. Data persistence will not work.", "error");
+                    loadingIndicator.textContent = "Error: Firebase not configured.";
+                    return;
+                }
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // Authenticate user
+                // This will use the __initial_auth_token if provided (for superuser/admin context)
+                // Otherwise, it will sign in anonymously.
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Listen for auth state changes and set currentUserId
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUserId = user.uid;
+                        userIdDisplay.textContent = `Logged in as: ${currentUserId}`;
+                        // Define collection path using appId for public data
+                        // This collection will be accessible by any authenticated user
+                        const collectionPath = `artifacts/${appId}/public/data/users`;
+                        usersCollectionRef = collection(db, collectionPath);
+                        setupRealtimeListener();
+                    } else {
+                        currentUserId = null;
+                        userIdDisplay.textContent = "Not logged in.";
+                        loadingIndicator.textContent = "Please log in to view data.";
+                        userTableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">Please log in to view data.</td></tr>';
+                    }
+                    loadingIndicator.style.display = 'none'; // Hide loading once auth is ready
+                });
+
+            } catch (error) {
+                console.error("Error initializing Firebase or authenticating:", error);
+                showMessageBox(`Error: ${error.message}`, 'error');
+                loadingIndicator.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Setup real-time listener for user data
+        function setupRealtimeListener() {
+            if (!usersCollectionRef) {
+                console.error("Firestore collection reference not initialized.");
+                showMessageBox("Firestore collection not ready.", "error");
+                return;
+            }
+            onSnapshot(usersCollectionRef, (snapshot) => {
+                currentUsersSnapshot = []; // Clear previous snapshot data
+                snapshot.forEach(doc => {
+                    currentUsersSnapshot.push({ id: doc.id, ...doc.data() });
+                });
+                renderTable(currentUsersSnapshot);
+            }, (error) => {
+                console.error("Error fetching real-time data:", error);
+                showMessageBox(`Error fetching data: ${error.message}`, 'error');
+                loadingIndicator.textContent = `Error loading data: ${error.message}`;
+            });
+        }
+
+        // Function to render the table rows
+        function renderTable(data) {
+            userTableBody.innerHTML = ''; // Clear existing rows
+            if (data.length === 0) {
+                userTableBody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">No user data available.</td></tr>';
+                return;
+            }
+            data.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.firstName || 'N/A'}</td>
+                    <td>${user.lastName || 'N/A'}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-view" onclick="viewUserDetails('${user.id}')">View</button>
+                        <button class="btn btn-delete" onclick="deleteUser('${user.id}')">Delete</button>
+                    </td>
+                `;
+                userTableBody.appendChild(row);
+            });
+        }
+
+        // Function to delete a user from Firestore
+        async function deleteUser(id) {
+            if (!usersCollectionRef || !currentUserId) {
+                showMessageBox("Authentication or database not ready. Please wait.", "error");
+                return;
+            }
+            try {
+                await deleteDoc(doc(db, usersCollectionRef.path, id));
+                showMessageBox(`User with ID ${id} deleted successfully!`, 'success');
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                showMessageBox(`Error deleting user: ${error.message}`, 'error');
+            }
+        }
+
+        // Function to add a new user to Firestore (This function is no longer called from the HTML)
+        async function addNewUser() {
+            // This function is kept for completeness but is not triggered by the UI anymore.
+            // If you wish to re-enable adding users, you'll need to add the input fields and button back to the HTML.
+            console.log("Add new user function called (UI elements removed).");
+            /*
+            if (!usersCollectionRef || !currentUserId) {
+                showMessageBox("Authentication or database not ready. Please wait.", "error");
+                return;
+            }
+            const firstName = newFirstNameInput.value.trim();
+            const lastName = newLastNameInput.value.trim();
+            const email = newEmailInput.value.trim();
+            const additionalInfo = newAdditionalInfoInput.value.trim();
+
+            if (!firstName || !lastName || !email) {
+                showMessageBox("Please fill in First Name, Last Name, and Email.", "error");
+                return;
+            }
+
+            try {
+                await addDoc(usersCollectionRef, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    additionalInfo: additionalInfo,
+                    createdAt: new Date().toISOString()
+                });
+                showMessageBox("User added successfully!", "success");
+                newFirstNameInput.value = '';
+                newLastNameInput.value = '';
+                newEmailInput.value = '';
+                newAdditionalInfoInput.value = '';
+            } catch (error) {
+                console.error("Error adding user:", error);
+                showMessageBox(`Error adding user: ${error.message}`, 'error');
+            }
+            */
+        }
+
+        // Function to view user details in a modal
+        function viewUserDetails(id) {
+            const user = currentUsersSnapshot.find(user => user.id === id);
+            if (user) {
+                document.getElementById('modalUserId').textContent = user.id;
+                document.getElementById('modalUserFirstName').textContent = user.firstName || 'N/A';
+                document.getElementById('modalUserLastName').textContent = user.lastName || 'N/A';
+                document.getElementById('modalUserEmail').textContent = user.email || 'N/A';
+                document.getElementById('modalUserAdditionalInfo').textContent = user.additionalInfo || 'N/A';
+                showModal();
+            } else {
+                showMessageBox(`User with ID ${id} not found in current data.`, 'error');
+            }
+        }
+
+        // Function to show the modal
+        function showModal() {
+            userDetailsModal.classList.add('show');
+        }
+
+        // Function to hide the modal
+        function hideModal() {
+            userDetailsModal.classList.remove('show');
+        }
+
+        // Event Listeners
+        // addNewUserBtn.addEventListener('click', addNewUser); // Removed as the section is removed
+
+        // Initial Firebase setup when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeFirebase);
+    </script>
 </body>
 </html>
